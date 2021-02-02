@@ -15,12 +15,13 @@ public class Bucket {
      * 数据结构里的每个节点类型都是Entry,即封装了一组Key-Value,具体可以去Entry类里看
      */
     private BucketContainer container;
-
+    private BucketContainer tempC;
+    public int bnumber = 0;
     /**
      * 初始化操作,默认的container为nodelist
      */
     public Bucket(){
-        container = new NodeList();
+        container = new NodeList();//每个bucket放一个Entry链/bst
     }
 
     /**
@@ -38,7 +39,11 @@ public class Bucket {
      */
     public String getValue(String key){
         //todo:write your code here for part-a
-        return null;
+        if(container.searchElement(key) == null){
+            return null;
+        }else{
+            return container.searchElement(key).value;
+        }
     }
 
     /**
@@ -50,7 +55,17 @@ public class Bucket {
      */
     public String putValue(String key,String value){
         //todo:write your code here for part-a
-        return null;
+        Entry e = new Entry(key,value);
+        if(container.searchElement(key) != null){
+            String t = container.searchElement(key).value;
+            container.updateElement(e);
+            //System.out.println(t);
+            return t;
+        }else{
+            container.addElement(e);
+            bnumber++;
+            return null;
+        }
     }
 
     /**
@@ -60,7 +75,15 @@ public class Bucket {
      */
     public String removeValue(String key){
         //todo:write your code here for part-a
-        return null;
+        if(container.searchElement(key) != null){
+            String t = container.searchElement(key).value;
+            container.removeElement(key);
+            bnumber --;
+            return t;
+        }else {
+            System.out.println("没有找到"+key+"位置的值");
+            return null;
+        }
     }
 
     /**
@@ -68,6 +91,14 @@ public class Bucket {
      */
     public void nodelistToBst(){
         //todo:write your code here for part-b
+        tempC = new Bst();
+        Entry[] entrys = container.traverse();
+//        System.out.println(entrys.length);
+        for(int i = 0; i < 8; i++){
+            tempC.addElement(entrys[i]);
+        }
+        container = tempC;
+        tempC = null;
     }
 
     /**
@@ -75,6 +106,14 @@ public class Bucket {
      */
     public void bstToNodelist(){
         //todo:write your code here for part-b
+        tempC = new NodeList();
+        Entry[] entrys = container.traverse();
+
+        for(int i = 0; i < 6; i++){
+            tempC.addElement(entrys[i]);
+        }
+        container = tempC;
+        tempC = null;
     }
 
 }

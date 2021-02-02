@@ -1,6 +1,7 @@
 package space.glimmer.lab;
 
 import space.glimmer.lab.container.Bucket;
+import space.glimmer.lab.container.NodeList;
 
 /**
  * @author Lehr
@@ -9,6 +10,8 @@ import space.glimmer.lab.container.Bucket;
  * 分为了a,b,c,d四个部分,每个部分完成后去进行对应的测试即可
  */
 public class GlimmerHashMap {
+
+    private int number;
 
     /**
      * buckets数组的长度
@@ -21,7 +24,7 @@ public class GlimmerHashMap {
     /**
      * 拉链法实现哈希表的这个数组,里面的每个桶Bucket里通过数据结构存放内容
      */
-    private Bucket[] buckets;
+    private Bucket[] buckets;//bucket数组
 
     /**
      * 阈值,意思是,在下次扩容之前,这个hashmap里最多能装多少元素
@@ -32,8 +35,6 @@ public class GlimmerHashMap {
      * 当我们想要加入第17个元素的时候,则需要扩容到32,完成看扩容后,加入这个元素
      */
     private int threshold = 16;
-
-
 
 
     /**
@@ -54,7 +55,7 @@ public class GlimmerHashMap {
      */
     public int size() {
         //todo:write your code here for part-a
-        return 0;
+        return number;
     }
 
     /**
@@ -65,7 +66,9 @@ public class GlimmerHashMap {
      */
     public String get(String key) {
         //todo:write your code here for part-a
-        return null;
+        Bucket b = getBucket(key);
+        return b.getValue(key);
+        //return null;
     }
 
     /**
@@ -79,7 +82,28 @@ public class GlimmerHashMap {
      */
     public String put(String key, String value) {
         //todo:write your code here for part-a
+        if (number <= threshold) {
+            if(get(key) != null) {
+                String t = get(key);
+                getBucket(key).putValue(key, value);
+
+                number++;
+                return t;
+            }else{
+                getBucket(key).putValue(key, value);
+                if(getBucket(key).bnumber >= 8 && getBucket(key).checkContainerType().equals("nodelist")){
+                    getBucket(key).nodelistToBst();
+                    System.out.println("已经将"+getBucket(key)+"从nodelist改为bst");
+                }
+                //System.out.println("bucket:"+getBucket(key));
+                number++;
+                return null;
+            }
+        }else{
+            System.out.println("添加失败：已满");
+        }
         //todo:write your code here for part-b
+
         //todo:write your code here for part-c
         return null;
     }
@@ -93,7 +117,19 @@ public class GlimmerHashMap {
     public String remove(String key) {
         //todo:write your code here for part-a
         //todo:write your code here for part-b
-        return null;
+        if(getBucket(key).getValue(key) != null){
+            String t = getBucket(key).getValue(key);
+            getBucket(key).removeValue(key);
+            if(getBucket(key).bnumber <= 6 && getBucket(key).checkContainerType().equals("bst")){
+                getBucket(key).bstToNodelist();
+                System.out.println("已经将"+getBucket(key)+"从bst改为nodelist");
+            }
+            number--;
+            return t;
+        }else{
+            return null;
+        }
+
     }
 
     /**
@@ -125,7 +161,6 @@ public class GlimmerHashMap {
      */
     public int hashIt(String key) {
         return key==null?0:Math.abs(key.hashCode()) % bucketLen;
-
     }
 
     /**

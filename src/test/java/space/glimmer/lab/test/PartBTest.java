@@ -54,6 +54,7 @@ public class PartBTest {
         Bucket b = tmap.getBucket("FBFBFBFBFBFBFBFBEaFB");
         assertEquals("bst", b.checkContainerType());
 
+
         tmap.remove("FBFBFBFBFBFBFBFBEaFB");
         tmap.remove("FBFBFBFBFBFBFBEaFBFB");
         tmap.remove("FBFBFBFBFBFBEaFBFBFB");
