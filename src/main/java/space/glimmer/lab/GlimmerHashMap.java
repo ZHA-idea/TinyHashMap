@@ -1,6 +1,7 @@
 package space.glimmer.lab;
 
 import space.glimmer.lab.container.Bucket;
+import space.glimmer.lab.container.Entry;
 import space.glimmer.lab.container.NodeList;
 
 /**
@@ -11,7 +12,7 @@ import space.glimmer.lab.container.NodeList;
  */
 public class GlimmerHashMap {
 
-    private int number;
+    private int number = 0;
 
     /**
      * buckets数组的长度
@@ -66,8 +67,8 @@ public class GlimmerHashMap {
      */
     public String get(String key) {
         //todo:write your code here for part-a
-        Bucket b = getBucket(key);
-        return b.getValue(key);
+
+        return getBucket(key).getValue(key);
         //return null;
     }
 
@@ -81,13 +82,16 @@ public class GlimmerHashMap {
      * @return
      */
     public String put(String key, String value) {
+        //todo:write your code here for part-c
+        if(number >= threshold){
+            resize();
+        }
         //todo:write your code here for part-a
+        //todo:write your code here for part-b
         if (number <= threshold) {
             if(get(key) != null) {
                 String t = get(key);
                 getBucket(key).putValue(key, value);
-
-                number++;
                 return t;
             }else{
                 getBucket(key).putValue(key, value);
@@ -97,14 +101,15 @@ public class GlimmerHashMap {
                 }
                 //System.out.println("bucket:"+getBucket(key));
                 number++;
+                System.out.println(number +","+ threshold+","+bucketLen);
                 return null;
             }
         }else{
             System.out.println("添加失败：已满");
         }
-        //todo:write your code here for part-b
 
-        //todo:write your code here for part-c
+
+
         return null;
     }
 
@@ -140,6 +145,29 @@ public class GlimmerHashMap {
      */
     private void resize() {
         //todo:write your code here for part-c
+        System.out.println(">>>开始扩容");
+        number = 0;
+        Bucket[] oldBuckets = buckets;
+        int oldBucketLen = bucketLen;
+        bucketLen = 2*bucketLen;
+        buckets = new Bucket[(bucketLen)];
+        System.out.println(buckets.length);
+        for (int i = 0; i < (buckets.length); i++) {
+            buckets[i] = new Bucket();
+        }
+        for(int i = 0; i < oldBuckets.length; i++){
+            Entry[] oldEntrys = oldBuckets[i].getAll();
+            for(int j = 0; j < oldEntrys.length; j++){
+                if(oldEntrys[j] != null) {
+                    //System.out.println(">>>>"+oldEntrys[j].value);
+                    put(oldEntrys[j].key, oldEntrys[j].value);
+                }
+            }
+        }
+        threshold = threshold * 2;
+        System.out.println(">>>扩容完成："+bucketLen);
+//        bucketLen = bucketLen * 2;
+
     }
 
 

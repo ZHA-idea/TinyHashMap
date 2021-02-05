@@ -1,5 +1,7 @@
 package space.glimmer.lab.container;
 
+import space.glimmer.lab.GlimmerHashMap;
+
 /**
  * @author Lehr
  * @create: 2021-01-16
@@ -7,7 +9,8 @@ package space.glimmer.lab.container;
  */
 public class Bst implements BucketContainer{
 
-
+    public int threshold = 1;
+    public Entry[] retEntrys;
     class Node{
         Entry E;
         Node left;
@@ -15,7 +18,6 @@ public class Bst implements BucketContainer{
     }
 
     public Node root;
-    private Entry[] retEntrys = new Entry[7];
     int i = 0;
     /**
      * 写死的,不能修改
@@ -40,10 +42,26 @@ public class Bst implements BucketContainer{
             System.out.println("没有找到k:"+key+"对应的Entry，因为没有root");
             return null;
         }else{
-            if(compare(root, key) == null){
-                System.out.println("没有找到k:"+key+"对应的Entry，null");
+            Node p = root;
+            while(true){
+                if(key.compareTo(p.E.key) < 0){
+                    if(p.left != null){ p = p.left;}
+                    else{
+                        System.out.println("bst查找节点失败：没有这个节点");
+                        return  null;
+                    }
+                }else if(key.compareTo(p.E.key) > 0){
+                    if(p.right != null){ p = p.right;}
+                    else{
+                        System.out.println("bst查找节点失败：没有这个节点");
+                        return  null;
+                    }
+                }else if(key.compareTo(p.E.key) == 0){
+//                    p.E.value = e.value;
+                    System.out.println("bst找到了节点k:"+key+",v:"+p.E.value+"");
+                    return p.E;
+                }
             }
-            return compare(root,key);
         }
     }
 
@@ -58,6 +76,7 @@ public class Bst implements BucketContainer{
             root = new Node();
             root.E = e;
             System.out.println("根节点k:"+ e.key+",v:"+ e.value+"已添加");
+            threshold++;
         }
         else if(root != null){
 
@@ -69,6 +88,7 @@ public class Bst implements BucketContainer{
                         p.left = new Node();
                         p.left.E = e;
                         System.out.println("节点k:"+ e.key+",v:"+ e.value+"已添加");
+                        threshold++;
                         break;
                     }
                 }else if(e.key.compareTo(p.E.key) > 0){
@@ -77,6 +97,7 @@ public class Bst implements BucketContainer{
                         p.right = new Node();
                         p.right.E = e;
                         System.out.println("节点k:"+ e.key+",v:"+ e.value+"已添加");
+                        threshold++;
                         break;
                     }
                 }
@@ -163,6 +184,7 @@ public class Bst implements BucketContainer{
                     p = null;
                 }
                 System.out.println("删除k:"+key+"成功");
+                threshold--;
             }else {
                 while (q != null) {
                     if(q.left == p || q.right == p){
@@ -216,6 +238,7 @@ public class Bst implements BucketContainer{
 
                 }
                 System.out.println("删除k:"+key+"成功");
+                threshold--;
             }
 //                    if(p.left == null && p.right == null) {
 //                        p = null;
@@ -239,6 +262,7 @@ public class Bst implements BucketContainer{
     @Override
     public Entry[] traverse() {
         //todo:write your code here for part-b
+        retEntrys = new Entry[threshold];
         if(root == null){return null;}
         retEntry(root);
 
@@ -259,8 +283,10 @@ public class Bst implements BucketContainer{
         }
         if(node.E.key == key){
             return node.E;
+        }else{
+            return null;
         }
-        return null;
+        //return null;
     }
     private void retEntry(Node node){
         retEntrys[i] = node.E;

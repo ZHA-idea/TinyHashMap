@@ -1,5 +1,7 @@
 package space.glimmer.lab.container;
 
+import space.glimmer.lab.GlimmerHashMap;
+
 /**
  * @author Lehr
  * @create: 2021-01-16
@@ -8,6 +10,8 @@ package space.glimmer.lab.container;
  */
 public class NodeList implements BucketContainer{
 
+    public Entry[] retEntrys;
+    public int threshold = 0;
     class Node {
         public Entry E = null;
         public Node next = null;
@@ -41,17 +45,17 @@ public class NodeList implements BucketContainer{
     @Override
     public Entry searchElement(String key) {
         //todo:write your code here for part-a
-        Node p = head;
-        while(p.next != null){
-            p = p.next;
+        Node p = head.next;
+        while(p != null){
             if(p.E == null){
-               System.out.println("这个节点没有Entry");
-            }else if(p.E.key == key){
-                System.out.println("通过k:"+key+"找到了v:"+p.E.value);
+               System.out.println("这个节点没有Entry??我迷了???");
+            }else if(key.equals(p.E.key)){
+                System.out.println("nl通过k:"+key+"找到了v:"+p.E.value);
                 return p.E;
             }
+            p = p.next;
         }
-        System.out.println("没有找到k:"+key+"对应的v");
+        System.out.println("nl没有找到k:"+key+"对应的v");
         return null;
     }
 
@@ -69,6 +73,7 @@ public class NodeList implements BucketContainer{
         p.next = new Node();
         p.next.E = e;
         System.out.println("节点k:"+e.key+",v:"+e.value+"添加成功");
+        threshold++;
     }
 
 
@@ -103,6 +108,7 @@ public class NodeList implements BucketContainer{
             if(p.next.E.key == key){
 
                 System.out.println("k:"+key+",v:"+p.next.E.value+"删除成功！");
+                threshold--;
                 p.next = p.next.next;
                 return;
             }else {
@@ -122,13 +128,13 @@ public class NodeList implements BucketContainer{
     public Entry[] traverse() {
         //todo:write your code here for part-a
         Node p = head.next;
-        Entry[] temp = new Entry[8];
+        retEntrys = new Entry[threshold];
         int i = 0;
         while(p != null){
-            temp[i] = p.E;
+            retEntrys[i] = p.E;
             i++;
             p = p.next;
         }
-        return temp;
+        return retEntrys;
     }
 }

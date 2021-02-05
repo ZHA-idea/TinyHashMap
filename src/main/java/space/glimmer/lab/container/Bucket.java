@@ -17,6 +17,8 @@ public class Bucket {
     private BucketContainer container;
     private BucketContainer tempC;
     public int bnumber = 0;
+
+
     /**
      * 初始化操作,默认的container为nodelist
      */
@@ -115,5 +117,10 @@ public class Bucket {
         container = tempC;
         tempC = null;
     }
-
+    /**
+     * 提取出Bucket中所有元素
+     */
+    public Entry[] getAll(){
+        return container.traverse();
+    }
 }
